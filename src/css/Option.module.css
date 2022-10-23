@@ -1,0 +1,32 @@
+.dropdownItem, .backItem{
+    cursor: pointer;
+    padding: 16px;
+    margin-block: 10px;
+    background-color: #c8c8c8;
+    color: black;
+    border-radius: 14px;
+    transition: 300ms 50ms;
+    display: flex;
+}
+.dropdownItem:hover{
+    transform: scale(1.06);
+    background-color: rgb(248, 117, 117);
+    color: white;
+}
+.dropdownItem:active{
+    transform: scale(1);
+}
+.backItem:hover{
+    transform: scale(1.07);
+    background-color: black;
+    color: white;
+}
+.backItem:active{
+    transform: scale(1);
+}
+.arrowContainer{
+    margin-left: auto;
+}
+.arrow{
+    width: 20px;
+}
