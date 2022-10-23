@@ -15,41 +15,46 @@ const getToken = (setToken) =>
             console.log("Error: ", error);
           });
 
-const getData = (token,setMenu) => {
+const getData = (token,setMenu,setIsLoading) => {
     axios.get('https://interview-questions-dbs.herokuapp.com/welcome',
           { headers: { 'X-Requested-With': 'XMLHttpRequest', Authorization: `Bearer ${token}`} })
-          .then(res => setMenu(res.data.data))
-          .catch(err => console.log(err));
+          .then(res => {
+            setMenu(res.data.data);
+            setIsLoading(false);
+          })
+          .catch(err => {
+            console.log('Error: ',err);
+            setIsLoading(false);
+          });
 };
 
 function AllOptions(){
     const [token, setToken] = useState("");
     const [menu, setMenu] = useState([]);
-    const [folderLevels,setFolderLevels] = useState([]);
+    const [optionLevels,setOptionLevels] = useState([]);
+    const [isLoading,setIsLoading] = useState(true);
 
     useEffect(() => {
         getToken(setToken);
-        getData(token,setMenu);
+        getData(token,setMenu,setIsLoading);
     }, [token]);
     
-    function openHandle(childrenData,currData){
-      //old state pushed in the stack
-      setFolderLevels(prevFolderLevels => [...prevFolderLevels,currData]);
-
-      setMenu(childrenData);
+    function openHandle(childrenOptionsLevel,currOptionsLevel){
+      //current options level pushed in the stack.
+      setOptionLevels(prevOptionsLevels => [...prevOptionsLevels,currOptionsLevel]);
+      //setting menu with children options level.
+      setMenu(childrenOptionsLevel);
     }
 
     function backHandle(){
-      //accessing the current state 
-      //from the top
-      setMenu(folderLevels[folderLevels.length - 1]);
+      //accessing the current options level from the top of the stack
+      setMenu(optionLevels[optionLevels.length - 1]);
 
-      setFolderLevels(prevFolderLevels => {
-        const newFolderLevels = [...prevFolderLevels];
-        //popping the current state 
-        //from the top
-        newFolderLevels.pop();
-        return newFolderLevels;
+      setOptionLevels(prevOptionsLevels => {
+        const newOptionsLevels = [...prevOptionsLevels];
+        //popping the current options level from the top of the stack.
+        newOptionsLevels.pop();
+        return newOptionsLevels;
       });
     }
 
@@ -69,14 +74,24 @@ function AllOptions(){
         });
     }
 
+    let dropdown = null;
+    if(isLoading){
+      dropdown =  <div className={styles1.container}>
+                      <div className={styles1.outerLoader}></div>
+                      <div className={styles1.innerLoader}></div>
+                  </div>
+    }else{
+      dropdown =  <ul className={styles1.dropdownList}>
+                    {optionLevels.length > 0 && <li className={styles2.backItem} 
+                                                    onClick={backHandle} >
+                                                    Back
+                                                </li>}
+                    {options}
+                  </ul>
+    }
 
     return (
-      <ul className={styles1.dropdownList}>
-        {folderLevels.length > 0 && <li className={styles2.backItem} onClick={backHandle} >
-                                        Back
-                                    </li>}
-        {options}
-      </ul>
+      dropdown
     )
 }
 

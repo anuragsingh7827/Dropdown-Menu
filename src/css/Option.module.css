@@ -5,7 +5,7 @@
     background-color: #c8c8c8;
     color: black;
     border-radius: 14px;
-    transition: 300ms 50ms;
+    transition: 300ms;
     display: flex;
 }
 .dropdownItem:hover{
